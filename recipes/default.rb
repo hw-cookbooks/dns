@@ -9,8 +9,8 @@ ruby_block 'Apply DNS information' do
     node.default[:dns][:entry][:name] = [node.name, node[:dns][:domain]].join('.')
     
     con = Fog::DNS.new(
-      node[:dns][:credentials].merge(
-        :provider => node[:dns][:provider]
+      {:provider => node[:dns][:provider]}.merge(
+        node[:dns][:credentials]
       )
     )
     domain = con.list_domains.body['domains'].detect do |domain_hash|

@@ -7,12 +7,8 @@ ruby_block 'Apply DNS information' do
     require 'fog'
 
     node.default[:dns][:entry][:name] = [node.name, node[:dns][:domain]].join('.')
-    
-    con = Fog::DNS.new(
-      {:provider => node[:dns][:provider]}.merge(
-        node[:dns][:credentials]
-      )
-    )
+    con = Fog::DNS.new(Mash.new(:provider => node[:dns][:provider]).merge(node[:dns][:credentials].to_hash))
+
     domain = con.list_domains.body['domains'].detect do |domain_hash|
       domain_hash['name'] == node[:dns][:domain]
     end
@@ -41,7 +37,10 @@ ruby_block 'Apply DNS information' do
   not_if do
     node[:dns][:disable] ||
     begin
-      Resolv.getaddress(node[:dns][:entry][:name]) == node[:dns][:entry][:value]
+      existing = Resolv::DNS.new(
+        :nameserver => File.readlines('/etc/resolv.conf').find_all{|s|s.start_with?('nameserver')}.map{|s|s.split.last}.uniq
+      ).getaddress(node[:dns][:entry][:name]).to_s
+      existing == node[:dns][:entry][:value]
     rescue Resolv::ResolvError
       false
     end

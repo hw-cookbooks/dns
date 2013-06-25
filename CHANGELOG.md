@@ -1,3 +1,6 @@
+# v0.1.0
+* Initial non-alpha release
+
 # v0.0.4
 * Add dependency on hosts_file
 * Allow provider to be nested within credentials

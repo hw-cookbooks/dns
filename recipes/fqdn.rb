@@ -9,8 +9,8 @@ include_recipe 'hosts_file'
 
 hosts_file_entry '127.0.0.1' do
   action :nothing
-  hostname node[:hosts_file][:fqdn]
-  aliases [node[:hosts_file][:hostname], 'localhost']
+  hostname 'localhost'
+  aliases [node[:hosts_file][:hostname]]
   not_if do
     node[:fqdn] == node[:dns][:entry][:name]
   end

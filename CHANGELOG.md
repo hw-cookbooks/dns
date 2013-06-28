@@ -1,3 +1,6 @@
+# v0.1.2
+* Fix attribute access for when cloud is not defined
+
 # v0.1.0
 * Initial non-alpha release
 

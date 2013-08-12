@@ -7,6 +7,10 @@ ruby_block 'Apply DNS information' do
     require 'fog'
 
     node.default[:dns][:entry][:name] = [node.name, node[:dns][:domain]].join('.')
+    if node[:ec2]
+      node.set[:dns][:entry][:value] = node[:ec2][:public_hostname]
+      node.set[:dns][:entry][:type] = 'CNAME'
+    end
     con = Fog::DNS.new(Mash.new(:provider => node[:dns][:provider]).merge(node[:dns][:credentials].to_hash))
 
     domain = con.list_domains.body['domains'].detect do |domain_hash|

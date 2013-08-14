@@ -34,7 +34,7 @@ action :create do
   end
 end
 
-action :delete do
+action :destroy do
   zone = connection.zones.detect do |z|
     z.domain == new_resource.domain
   end

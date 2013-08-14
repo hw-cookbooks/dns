@@ -1,3 +1,7 @@
+# v0.1.4
+* Provide `dns` LWRP for creating and destroying records
+* Refactor fog interaction to support more providers
+
 # v0.1.2
 * Fix attribute access for when cloud is not defined
 

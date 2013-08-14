@@ -19,17 +19,17 @@ action :create do
   args[:ttl] = new_resource.ttl if new_resource.ttl
   args[:priority] = new_resource.priority if new_resource.priority
   if(record)
-    diff = args.keys.detect do |k|
+    diff = args.keys.find_all do |k|
       record.send(k) != args[k]
     end
-    if(diff)
-      Chef::Log.debug "DNS diff detected on attribute #{k}. Updating. (#{args.inspect})"
+    unless(diff.empty?)
       record.update(args)
+      Chef::Log.info "Updated DNS entry: #{new_resource.entry_name} -> #{diff.map{|k| "#{k}:#{args[k]}"}.join(', ')}"
       new_resource.updated_by_last_action(true)
     end
   else
-    Chef::Log.debug "DNS entry not found. Creating. (#{args.inspect})"
     zone.records.create(args)
+    Chef::Log.info "Created DNS entry: #{new_resource.entry_name} -> #{new_resource.entry_value}"
     new_resource.updated_by_last_action(true)
   end
 end
@@ -43,6 +43,7 @@ action :delete do
   end
   if(record)
     record.destroy
+    Chef::Log.info "Destroying DNS entry: #{new_resource.entry_name}"
     new_resource.updated_by_last_action(true)
   end
 end

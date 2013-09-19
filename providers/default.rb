@@ -50,8 +50,6 @@ end
 
 def connection
   @con ||= CookbookDNS.fog(
-    Mash.new(:provider => new_resource.provider).merge(
-      new_resource.credentials
-    ).to_hash
+    {:provider => new_resource.provider}.merge(new_resource.credentials).to_hash
   )
 end

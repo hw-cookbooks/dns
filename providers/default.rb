@@ -22,9 +22,15 @@ action :create do
     diff = args.keys.find_all do |k|
       record.send(k) != args[k]
     end
-    unless(diff.empty?)
-      record.update(args)
-      Chef::Log.info "Updated DNS entry: #{new_resource.entry_name} -> #{diff.map{|k| "#{k}:#{args[k]}"}.join(', ')}"
+    if diff.empty?
+      Chef::Log.info "No update required for DNS entry: #{new_resource.entry_name}"
+    else
+      Chef::Log.info "Updating DNS entry: #{new_resource.entry_name} -> #{diff.map{|k| "#{k}:#{args[k]}"}.join(', ')}"
+      if record.is_a?(Fog::DNS::Linode::Record)
+        linode_update(record, args)
+      else
+        record.update(args)
+      end
       new_resource.updated_by_last_action(true)
     end
   else
@@ -52,4 +58,9 @@ def connection
   @con ||= CookbookDNS.fog(
     {:provider => new_resource.provider}.merge(new_resource.credentials).to_hash
   )
+end
+
+def linode_update(record, args)
+  args.each { |key, value| record.send("#{key}=", value) }
+  record.save
 end

@@ -41,10 +41,12 @@ ruby_block 'Apply DNS information' do
   not_if do
     node[:dns][:disable] ||
     begin
-      existing = Resolv::DNS.new(
+      resolv_opts = { 
         :nameserver => File.readlines('/etc/resolv.conf').find_all{|s|s.start_with?('nameserver')}.map{|s|s.split.last}.uniq
-      ).getaddress(node[:dns][:entry][:name]).to_s
-      existing == node[:dns][:entry][:value]
+      }
+      existing = Resolv::DNS.new(resolv_opts).getaddress(node[:dns][:entry][:name]).to_s
+      existing == node[:dns][:entry][:value] || 
+        existing == Resolv::DNS.new(resolv_opts).getaddress(node[:dns][:entry][:value]).to_s
     rescue Resolv::ResolvError
       false
     end

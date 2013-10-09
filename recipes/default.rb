@@ -26,7 +26,7 @@ ruby_block 'Apply DNS information' do
       zone = con.zones.get(domain['id'])
       raise "Failed to locate zone for configured domain: #{node[:dns][:domain]}" unless zone
       record = zone.records.detect do |r|
-        r.name == node[:dns][:entry][:name]
+        r.name =~ /^#{node[:dns][:entry][:name]}.?$/
       end
     end
 

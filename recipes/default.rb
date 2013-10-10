@@ -25,12 +25,13 @@ ruby_block 'Apply DNS information' do
       raise "Failed to locate registered domain in account for configured domain: #{node[:dns][:domain]}" unless domain
       zone = con.zones.get(domain['id'])
       raise "Failed to locate zone for configured domain: #{node[:dns][:domain]}" unless zone
-      record = zone.records.detect do |r|
-        r.name =~ /^#{node[:dns][:entry][:name]}.?$/
-      end
     end
 
-    if(record)
+    record = zone.records.detect do |r|
+      r.name =~ /^#{node[:dns][:entry][:name]}.?$/
+    end
+
+    if record
       Chef::Log.info "DNS - Found existing record for: #{node[:dns][:entry][:name]}. Updating."
       Chef::Log.info "DNS - Existing type: #{record.type} Existing value: #{record.value}"
       record.value = node[:dns][:entry][:value]

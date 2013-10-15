@@ -34,9 +34,16 @@ ruby_block 'Apply DNS information' do
     if record
       Chef::Log.info "DNS - Found existing record for: #{node[:dns][:entry][:name]}. Updating."
       Chef::Log.info "DNS - Existing type: #{record.type} Existing value: #{record.value}"
-      record.value = node[:dns][:entry][:value]
-      record.type = node[:dns][:entry][:type].upcase
-      record.save
+      if node[:dns][:credentials][:provider] == "AWS"
+        record.modify(
+          :value => node[:dns][:entry][:value],
+          :type => node[:dns][:entry][:type].upcase
+        )
+      else
+        record.value = node[:dns][:entry][:value]
+        record.type = node[:dns][:entry][:type].upcase
+        record.save
+      end
     else
       Chef::Log.info "DNS - No existing record found for #{node[:dns][:entry][:name]}. Creating."
       zone.records.create(

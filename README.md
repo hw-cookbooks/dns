@@ -18,7 +18,7 @@ create DNS records for your nodes automatically.
 ```ruby
 dns 'dns.example.org' do
   credentials :some_cloud_token => '[TOKEN]', :some_cloud_key => '[KEY]'
-  provider 'some_cloud'
+  dns_provider 'some_cloud'
   entry_value '127.0.2.2'
   domain 'example.org'
 end

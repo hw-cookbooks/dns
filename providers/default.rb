@@ -1,7 +1,7 @@
 def load_current_resource
   new_resource.entry_name new_resource.name unless new_resource.entry_name
   new_resource.credentials node[:dns][:credentials] unless new_resource.credentials
-  new_resource.provider node[:dns][:provider] unless new_resource.provider
+  new_resource.dns_provider node[:dns][:provider] unless new_resource.dns_provider
 end
 
 action :create do
@@ -50,7 +50,7 @@ end
 
 def connection
   @con ||= CookbookDNS.fog(
-    Mash.new(:provider => new_resource.provider).merge(
+    Mash.new(:provider => new_resource.dns_provider).merge(
       new_resource.credentials
     ).to_hash
   )

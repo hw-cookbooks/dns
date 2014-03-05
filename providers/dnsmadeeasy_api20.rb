@@ -48,7 +48,7 @@ action :create do
       record[k] != args[k]
     end
     if (diff.empty?)
-      Chef::Log.info "No changes to be made."
+      Chef::Log.info "No updates needed to current record. No changes made."
     else
       resource["dns/managed/#{domain_id}/records/#{dns_id}"].put(JSON.generate(args), auth_headers)
       Chef::Log.info "Updated DNS entry: #{subdomain} -> #{diff.map{|k| "#{k}:#{args[k]}"}.join(', ')}"
@@ -57,7 +57,7 @@ action :create do
   # Record does not exist - create.
   else
     if (new_resource.dns_create_disable)
-      Chef::Log.info "Creating new record has been disabled.  No changes made."
+      Chef::Log.info "Creation of new record has been disabled.  No changes made."
     else
       resource["dns/managed/#{domain_id}/records"].post(JSON.generate(args), auth_headers)
       Chef::Log.info "Created DNS entry: #{subdomain} -> #{new_resource.entry_value}"
@@ -105,8 +105,8 @@ def auth_headers
   require "time"
 
   missing_args = Array.new
-  missing_args << "dnsmadeeasy_api_key" unless new_resource.credentials.has_key("dnsmadeeasy_api_key")
-  missing_args << "dnsmadeeasy_api_key" unless new_resource.credentials.has_key("dnsmadeeasy_secret_key")
+  missing_args << "dnsmadeeasy_api_key" unless new_resource.credentials.has_key?("dnsmadeeasy_api_key")
+  missing_args << "dnsmadeeasy_api_key" unless new_resource.credentials.has_key?("dnsmadeeasy_secret_key")
   raise "Missing required arguments: #{missing_args.join(" ")}" if missing_args.count > 0
 
   api_key = new_resource.credentials["dnsmadeeasy_api_key"]

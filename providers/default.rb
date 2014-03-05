@@ -5,6 +5,7 @@ def load_current_resource
 end
 
 action :create do
+
   zone = connection.zones.detect do |z|
     z.domain =~ /^#{new_resource.domain}\.{0,1}$/
   end

@@ -9,3 +9,4 @@ attribute :domain, :kind_of => String
 attribute :type, :kind_of => String, :required => true, :default => 'A'
 attribute :ttl, :kind_of => Numeric
 attribute :priority, :kind_of => Numeric
+attribute :dns_create_disable, :kind_of => [TrueClass, FalseClass], :default => false

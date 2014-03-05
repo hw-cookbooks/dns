@@ -6,7 +6,7 @@ end
 
 action :create do
   zone = connection.zones.detect do |z|
-    z.domain == new_resource.domain
+    z.domain =~ /^#{new_resource.domain}\.{0,1}$/
   end
   record = zone.records.detect do |r|
     r.name == new_resource.entry_name
@@ -23,7 +23,7 @@ action :create do
       record.send(k) != args[k]
     end
     unless(diff.empty?)
-      record.update(args)
+      record.modify(args)
       Chef::Log.info "Updated DNS entry: #{new_resource.entry_name} -> #{diff.map{|k| "#{k}:#{args[k]}"}.join(', ')}"
       new_resource.updated_by_last_action(true)
     end
@@ -36,7 +36,7 @@ end
 
 action :destroy do
   zone = connection.zones.detect do |z|
-    z.domain == new_resource.domain
+    z.domain =~ /^#{new_resource.domain}\.{0,1}$/
   end
   record = zone.records.detect do |r|
     r.name == new_resource.entry_name
@@ -49,9 +49,6 @@ action :destroy do
 end
 
 def connection
-  @con ||= CookbookDNS.fog(
-    Mash.new(:provider => new_resource.dns_provider).merge(
-      new_resource.credentials
-    ).to_hash
-  )
+  @con ||= CookbookDNS.fog(new_resource.credentials.merge(:provider => new_resource.dns_provider))
 end
+

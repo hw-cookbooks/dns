@@ -11,6 +11,7 @@ end
 dns 'Node DNS entry' do
   entry_name lazy{ node[:dns][:entry][:name] }
   entry_value node[:dns][:entry][:value]
+  domain node[:dns][:domain]
   type node[:dns][:entry][:type]
   not_if do
     node[:dns][:disable] ||

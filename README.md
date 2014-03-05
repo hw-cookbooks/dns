@@ -13,16 +13,31 @@ create DNS records for your nodes automatically.
 
 * actions: `:create`, `:destroy`
 
-### Example
+### Examples
 
 ```ruby
-dns 'dns.example.org' do
+# Record for name.example.org
+dns 'www' do
+  domain 'example.org'
   credentials :some_cloud_token => '[TOKEN]', :some_cloud_key => '[KEY]'
   dns_provider 'some_cloud'
   entry_value '127.0.2.2'
-  domain 'example.org'
+  type 'A'
+  ttl 1800
 end
 ```
+```ruby
+# DNSMadeEasy example for www2.example.org
+dns 'www2' do
+  provider 'dns_dnsmadeeasy'
+  domain 'example.org'
+  credentials :dnsmadeeasy_api_key => '[TOKEN]', :dnsmadeeasy_secret_key => '[KEY]'
+  entry_value '192.168.1.1'
+  type 'A'
+  ttl 1800
+end
+```
+
 
 ## Attributes
 

@@ -26,6 +26,7 @@ attribute :type, :kind_of => String, :required => true, :default => 'A'
 # Time To Live DNS property to give to entry.
 attribute :ttl, :kind_of => Numeric
 
+# Priority number used by specific DNS types, such as MX.
 attribute :priority, :kind_of => Numeric
 
 # Set to true will only update the DNS record. Will not create it if it does not exist.

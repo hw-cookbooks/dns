@@ -23,7 +23,7 @@ action :create do
   end
   raise "Domain '#{domain}' not found. No changes made." unless zone
 
-  domain_id = zone["id"];
+  domain_id = zone["id"]
 
   # Check if entry exists to update otherwise create.
   records = JSON.parse(resource["dns/managed/#{domain_id}/records"].get(auth_headers))
@@ -83,7 +83,7 @@ action :destroy do
   end
   raise "Domain '#{domain}' not found. No changes made." unless zone
 
-  domain_id = zone["id"];
+  domain_id = zone["id"]
 
   # Check if entry exists.
   records = JSON.parse(resource["dns/managed/#{domain_id}/records"].get(auth_headers))

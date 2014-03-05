@@ -16,7 +16,7 @@ create DNS records for your nodes automatically.
 ### Examples
 
 ```ruby
-# Record for name.example.org
+# Add/update DNS A-record for name.example.org
 dns 'www' do
   domain 'example.org'
   credentials :some_cloud_token => '[TOKEN]', :some_cloud_key => '[KEY]'
@@ -27,7 +27,7 @@ dns 'www' do
 end
 ```
 ```ruby
-# DNSMadeEasy API2.0 example for www2.example.org
+# DNSMadeEasy API2.0 example adding/updating A-record for www2.example.org
 dns 'www2' do
   provider 'dns_dnsmadeeasy_api20'
   domain 'example.org'

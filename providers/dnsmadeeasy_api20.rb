@@ -13,8 +13,7 @@ action :create do
   subdomain = new_resource.entry_name
   domain = new_resource.domain
 
-  api_url = "https://api.dnsmadeeasy.com/V2.0"
-  resource = RestClient::Resource.new(api_url)
+  resource = api_resource
 
   # Determine if domain/zone is in the account.
   zones = JSON.parse(resource["dns/managed"].get(auth_headers))
@@ -73,8 +72,7 @@ action :destroy do
   subdomain = new_resource.entry_name
   domain = new_resource.domain
 
-  api_url = "https://api.dnsmadeeasy.com/V2.0"
-  resource = RestClient::Resource.new(api_url)
+  resource = api_resource
 
   # Determine if domain/zone is in the account.
   zones = JSON.parse(resource["dns/managed"].get(auth_headers))
@@ -122,4 +120,13 @@ def auth_headers
     :"x-dnsme-hmac" => "#{hmac}",
     :"x-dnsme-requestDate" => "#{request_time}"
   }
+end
+
+def api_resource
+  # Create API resource object.
+  require "rest_client"
+
+  api_url = "https://api.dnsmadeeasy.com/V2.0"
+  RestClient::Resource.new(api_url)
+
 end

@@ -16,11 +16,11 @@ create DNS records for your nodes automatically.
 ### Examples
 
 ```ruby
-# Add/update DNS A-record for name.example.org
+# Add/update DNS A-record for www.example.org
 dns 'www' do
+  dns_provider 'DNSProvider'
   domain 'example.org'
-  credentials :some_cloud_token => '[TOKEN]', :some_cloud_key => '[KEY]'
-  dns_provider 'some_cloud'
+  credentials :some_cloud_token => 'TOKEN', :some_cloud_key => 'KEY'
   entry_value '127.0.2.2'
   type 'A'
   ttl 1800
@@ -31,7 +31,7 @@ end
 dns 'www2' do
   provider 'dns_dnsmadeeasy_api20'
   domain 'example.org'
-  credentials :dnsmadeeasy_api_key => '[TOKEN]', :dnsmadeeasy_secret_key => '[KEY]'
+  credentials :dnsmadeeasy_api_key => 'TOKEN', :dnsmadeeasy_secret_key => 'KEY'
   entry_value '192.168.1.1'
   type 'A'
   ttl 1800

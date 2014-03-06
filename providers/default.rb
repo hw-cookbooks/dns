@@ -10,7 +10,7 @@ action :create do
     z.domain =~ /^#{new_resource.domain}\.{0,1}$/
   end
   record = zone.records.detect do |r|
-    r.name == new_resource.entry_name
+    r.name =~ /^#{new_resource.entry_name}\.{0,1}$/
   end
   args = Mash.new(
     :value => new_resource.entry_value,

@@ -35,7 +35,7 @@ action :create do
     "name" => "#{subdomain}",
     "type" => "#{new_resource.type.upcase}",
     "value" => "#{new_resource.entry_value}",
-    "ttl" => new_resource.ttl
+    "ttl" => new_resource.ttl,
   }
 
   # Record exists - update.

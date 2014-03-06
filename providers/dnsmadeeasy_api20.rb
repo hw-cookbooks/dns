@@ -100,6 +100,8 @@ action :destroy do
   end
 end
 
+private
+
 def auth_headers
   # Generate authentication headers used by API.
   require "time"

@@ -7,10 +7,10 @@ end
 action :create do
 
   zone = connection.zones.detect do |z|
-    z.domain =~ /^#{new_resource.domain}\.{0,1}$/
+    z.domain =~ /^#{new_resource.domain}\.?$/
   end
   record = zone.records.detect do |r|
-    r.name =~ /^#{new_resource.entry_name}\.{0,1}$/
+    r.name =~ /^#{new_resource.entry_name}\.?$/
   end
   args = Mash.new(
     :value => new_resource.entry_value,
@@ -37,7 +37,7 @@ end
 
 action :destroy do
   zone = connection.zones.detect do |z|
-    z.domain =~ /^#{new_resource.domain}\.{0,1}$/
+    z.domain =~ /^#{new_resource.domain}\.?$/
   end
   record = zone.records.detect do |r|
     r.name == new_resource.entry_name
@@ -52,4 +52,3 @@ end
 def connection
   @con ||= CookbookDNS.fog(new_resource.credentials.merge(:provider => new_resource.dns_provider))
 end
-

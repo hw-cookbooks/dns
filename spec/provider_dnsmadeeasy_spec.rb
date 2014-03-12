@@ -36,8 +36,6 @@ describe 'fake::dme' do
     runner.converge(described_recipe)
   end
 
-  # TODO - add verification of auth_headers
-
   context "when a dns entry already exists for updating" do
     it 'update entry in dnsmadeeasy v2.0' do
       rest_client.should_receive(:get).exactly(2).and_return(

@@ -2,7 +2,7 @@
 
 dns 'Fake DNS update' do
   dns_provider 'aws'
-  entry_name '101test'
+  entry_name 'www'
   domain 'test.com'
   entry_value '192.168.200.200'
   type 'A'

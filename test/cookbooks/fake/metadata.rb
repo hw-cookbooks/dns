@@ -2,6 +2,7 @@ name             'fake'
 version          '0.1.0'
 
 depends 'dns'
+depends 'hosts_file', '~> 0.1.4'
 
 recipe 'fake::zone', 'Creates a DNS zone'
 recipe 'fake::update', 'Updates a DNS entry'

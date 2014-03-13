@@ -67,10 +67,10 @@ describe 'Run default provider with AWS' do
     end or raise 'record not created'
 
     # Verify created record
-    raise 'Invalid Name' unless record.name == name
-    raise 'Invalid Value' unless record.value == [initial_value] 
-    raise 'Invalid TTL' unless record.ttl == ttl.to_s
-    raise 'Invalid Type' unless record.type == type 
+    record.name.should eq(name)
+    record.value.should eq([initial_value])
+    record.ttl.should eq(ttl.to_s)
+    record.type.should eq(type)
   end
 
   it 'check if dns entry was updated' do
@@ -85,10 +85,10 @@ describe 'Run default provider with AWS' do
     end or raise 'record not created'
 
     # Verify updated record
-    raise 'Invalid Name' unless record.name == name
-    raise 'Invalid Value' unless record.value == [updated_value] 
-    raise 'Invalid TTL' unless record.ttl == ttl.to_s
-    raise 'Invalid Type' unless record.type == type 
+    record.name.should eq(name)
+    record.value.should eq([updated_value])
+    record.ttl.should eq(ttl.to_s)
+    record.type.should eq(type)
   end
 
   it 'check if dns entry was deleted' do

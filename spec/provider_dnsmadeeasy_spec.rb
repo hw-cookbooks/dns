@@ -12,6 +12,10 @@ describe 'Run DNSMadeEasy provider' do
   let(:rest_client) do
     client_stub = double("RestClient::Resource")
     client_stub.stub(:[]).and_return(client_stub)
+    client_stub.stub(:get).and_return(client_stub)
+    client_stub.stub(:post).and_return(client_stub)
+    client_stub.stub(:put).and_return(client_stub)
+    client_stub.stub(:delete).and_return(client_stub)
     client_stub
   end
 
@@ -52,58 +56,58 @@ describe 'Run DNSMadeEasy provider' do
   end
 
   it 'add entry in dnsmadeeasy v2.0' do
-    rest_client.should_receive(:get).exactly(2).and_return(
+    expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[]}]
     )
-    rest_client.should_receive(:post).and_return(nil)
+    expect(rest_client).to receive(:post).and_return(nil)
     chef_run
   end
 
   it 'update entry in dnsmadeeasy v2.0' do
-    rest_client.should_receive(:get).exactly(2).and_return(
+    expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[{"name":"#{name}","value":"#{updated_value}","id":12345678,"type":"#{type}","ttl":#{ttl}}]}]
     )
-    rest_client.should_receive(:put).and_return(nil)
+    expect(rest_client).to receive(:put).and_return(nil)
     chef_run
   end
 
   it 'no update required of entry in dnsmadeeasy v2.0' do
-    rest_client.should_receive(:get).exactly(2).and_return(
+    expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[{"name":"#{name}","value":"#{initial_value}","id":12345678,"type":"#{type}","ttl":#{ttl}}]}]
     )
-    rest_client.should_not_receive(:post)
-    rest_client.should_not_receive(:put)
+    expect(rest_client).to_not have_received(:post)
+    expect(rest_client).to_not have_received(:put)
     chef_run
   end
 
   it 'only updating of entry if exists in dnsmadeeasy v2.0' do
-    rest_client.should_receive(:get).exactly(2).and_return(
+    expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[]}]
     )
-    rest_client.should_not_receive(:post)
-    rest_client.should_not_receive(:put)
+    expect(rest_client).to_not have_received(:post)
+    expect(rest_client).to_not have_received(:put)
     chef_run_dns_disable
   end
 
   it 'deleting entry in dnsmadeeasy v2.0' do
-    rest_client.should_receive(:get).exactly(2).and_return(
+    expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[{"name":"#{name}","value":"192.168.1.2","id":12345678,"type":"#{type}","ttl":#{ttl}}]}]
     )
-    rest_client.should_receive(:delete).and_return(nil)
+    expect(rest_client).to receive(:delete).and_return(nil)
     chef_run_delete
   end
 
   it 'attempt deleting entry that does not exist in dnsmadeeasy v2.0' do
-    rest_client.should_receive(:get).exactly(2).and_return(
+    expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[]}]
     )
-    rest_client.should_not_receive(:delete)
+    expect(rest_client).to_not have_received(:delete)
     chef_run_delete
   end
 

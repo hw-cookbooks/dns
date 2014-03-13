@@ -67,10 +67,10 @@ describe 'Run default provider with AWS' do
     end or raise 'record not created'
 
     # Verify created record
-    record.name.should eq(name)
-    record.value.should eq([initial_value])
-    record.ttl.should eq(ttl.to_s)
-    record.type.should eq(type)
+    expect(record.name).to eq(name)
+    expect(record.value).to eq([initial_value])
+    expect(record.ttl).to eq(ttl.to_s)
+    expect(record.type).to eq(type)
   end
 
   it 'check if dns entry was updated' do
@@ -85,10 +85,10 @@ describe 'Run default provider with AWS' do
     end or raise 'record not created'
 
     # Verify updated record
-    record.name.should eq(name)
-    record.value.should eq([updated_value])
-    record.ttl.should eq(ttl.to_s)
-    record.type.should eq(type)
+    expect(record.name).to eq(name)
+    expect(record.value).to eq([updated_value])
+    expect(record.ttl).to eq(ttl.to_s)
+    expect(record.type).to eq(type)
   end
 
   it 'check if dns entry was deleted' do

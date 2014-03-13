@@ -1,39 +1,109 @@
 require 'spec_helper'
 require 'fog'
 
-describe 'Run dns::default' do
+provider = 'AWS'
+domain = 'test.com'
+name = 'www'
+initial_value = '10.0.0.1'
+updated_value = '192.168.1.1'
+ttl = 60
+type = 'A'
 
-  let(:chef_run) do
+describe 'Run default provider with AWS' do
+
+  let(:chef_run_create) do
     runner = ChefSpec::Runner.new(step_into: ['dns'])
-    runner.node.set[:dns][:provider] = "AWS"
-    runner.node.set[:dns][:credentials] = {:aws_access_key_id => "MOCK_ACCESS_KEY", :aws_secret_access_key => "MOCK_SECRET_KEY"}
+    runner.node.set[:dns][:provider] = provider
+    runner.node.set[:dns][:credentials] = {:aws_access_key_id => 'MOCK_ACCESS_KEY', :aws_secret_access_key => 'MOCK_SECRET_KEY'}
     runner.node.set[:dns][:disable] = false
-    runner.node.set[:dns][:domain] = "test.com"
-    runner.node.set[:dns][:entry][:name] = "www"
-    runner.node.set[:dns][:entry][:value] = "10.0.0.1"
-    runner.node.set[:dns][:entry][:type] = "A"
-    runner.node.set[:dns][:entry][:ttl] = 60
-    runner.converge("fake::fog_mock", "fake::zone", "dns::default")
+    runner.node.set[:dns][:domain] = domain
+    runner.node.set[:dns][:entry][:name] = name
+    runner.node.set[:dns][:entry][:value] = initial_value
+    runner.node.set[:dns][:entry][:type] = type
+    runner.node.set[:dns][:entry][:ttl] = ttl
+    runner.converge('fake::fog_mock', 'fake::zone', 'dns::default')
+  end
+  let(:chef_run_update) do
+    runner = ChefSpec::Runner.new(step_into: ['dns'])
+    runner.node.set[:dns][:provider] = provider
+    runner.node.set[:dns][:credentials] = {:aws_access_key_id => 'MOCK_ACCESS_KEY', :aws_secret_access_key => 'MOCK_SECRET_KEY'}
+    runner.node.set[:dns][:disable] = false
+    runner.node.set[:dns][:domain] = domain
+    runner.node.set[:dns][:entry][:name] = name
+    runner.node.set[:dns][:entry][:value] = updated_value
+    runner.node.set[:dns][:entry][:type] = type
+    runner.node.set[:dns][:entry][:ttl] = ttl
+    runner.converge('dns::default')
+  end
+  let(:chef_run_delete) do
+    runner = ChefSpec::Runner.new(step_into: ['dns'])
+    runner.node.set[:dns][:provider] = provider
+    runner.node.set[:dns][:credentials] = {:aws_access_key_id => 'MOCK_ACCESS_KEY', :aws_secret_access_key => 'MOCK_SECRET_KEY'}
+    runner.node.set[:dns][:disable] = false
+    runner.node.set[:dns][:domain] = domain
+    runner.node.set[:dns][:entry][:name] = name
+    runner.node.set[:dns][:entry][:value] = initial_value
+    runner.node.set[:dns][:entry][:type] = type
+    runner.node.set[:dns][:entry][:ttl] = ttl
+    runner.converge('fake::delete')
   end
 
-  it "check if dns entry was created" do
-    chef_run
+  Fog.mock!
+  dns = Fog::DNS.new({
+    :provider     => provider,
+    :aws_access_key_id => 'MOCK_ACCESS_KEY',
+    :aws_secret_access_key => 'MOCK_SECRET_KEY'
+  })
 
-    Fog.mock!
-    dns = Fog::DNS.new({
-      :provider     => 'AWS',
-      :aws_access_key_id => "MOCK_ACCESS_KEY",
-      :aws_secret_access_key => "MOCK_SECRET_KEY"
-    })
+  it 'check if dns entry was created' do
+    chef_run_create
 
     zone = dns.zones.detect do |z|
-      z.domain == "test.com."
-    end or raise "zone not created"
+      z.domain == 'test.com.'
+    end or raise 'zone not created'
 
     record = zone.records.detect do |r|
-      r.name == "www"
-    end or raise "record not created"
+      r.name == name
+    end or raise 'record not created'
 
+    # Verify created record
+    raise 'Invalid Name' unless record.name == name
+    raise 'Invalid Value' unless record.value == [initial_value] 
+    raise 'Invalid TTL' unless record.ttl == ttl.to_s
+    raise 'Invalid Type' unless record.type == type 
   end
+
+  it 'check if dns entry was updated' do
+    chef_run_update
+
+    zone = dns.zones.detect do |z|
+      z.domain == 'test.com.'
+    end or raise 'zone not created'
+
+    record = zone.records.detect do |r|
+      r.name == name
+    end or raise 'record not created'
+
+    # Verify updated record
+    raise 'Invalid Name' unless record.name == name
+    raise 'Invalid Value' unless record.value == [updated_value] 
+    raise 'Invalid TTL' unless record.ttl == ttl.to_s
+    raise 'Invalid Type' unless record.type == type 
+  end
+
+  it 'check if dns entry was deleted' do
+    chef_run_delete
+
+    zone = dns.zones.detect do |z|
+      z.domain == 'test.com.'
+    end or raise 'zone not created'
+
+    record = zone.records.detect do |r|
+      r.name == name
+    end
+
+    raise 'record was not deleted' if record
+  end
+
 end
 

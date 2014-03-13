@@ -50,7 +50,7 @@ action :create do
       Chef::Log.info "No updates needed to current record. No changes made."
     else
       resource["dns/managed/#{domain_id}/records/#{dns_id}"].put(JSON.generate(args), auth_headers)
-      Chef::Log.info "Updated DNS entry: #{subdomain} -> #{diff.map{|k| "#{k}:#{args[k]}"}.join(', ')}"
+      Chef::Log.info "Updated DNS entry: #{subdomain} -> #{diff.map{ |k| "#{k}:#{args[k]}" }.join(', ')}"
       new_resource.updated_by_last_action(true)
     end
   # Record does not exist - create.

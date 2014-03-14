@@ -105,15 +105,18 @@ def auth_headers
   require "time"
 
   missing_args = Array.new
-  missing_args << "dnsmadeeasy_api_key" unless new_resource.credentials.has_key?("dnsmadeeasy_api_key")
-  missing_args << "dnsmadeeasy_api_key" unless new_resource.credentials.has_key?("dnsmadeeasy_secret_key")
+  ["dnsmadeeasy_api_key", "dnsmadeeasy_secret_key"].each do |auth_key|
+    unless new_resource.credentials.has_key?(auth_key) && !new_resource.credentials[auth_key].to_s.empty?
+      missing_args << auth_key
+    end
+  end
   raise "Missing required arguments: #{missing_args.join(" ")}" if missing_args.count > 0
 
   api_key = new_resource.credentials["dnsmadeeasy_api_key"]
   secret_key = new_resource.credentials["dnsmadeeasy_secret_key"]
 
   request_time = Time.now.httpdate
-  hmac = OpenSSL::HMAC.hexdigest('sha1',secret_key ,request_time)
+  hmac = OpenSSL::HMAC.hexdigest('sha1', secret_key, request_time)
 
   {
     :"x-dnsme-apiKey" => "#{api_key}",

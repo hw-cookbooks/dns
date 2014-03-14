@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'fog'
 
 provider = 'AWS'
-domain = 'test.com'
+domain = 'test.com.'
 name = 'www'
 initial_value = '10.0.0.1'
 updated_value = '192.168.1.1'
@@ -55,16 +55,18 @@ describe 'Run default provider with AWS' do
     :aws_secret_access_key => 'MOCK_SECRET_KEY'
   })
 
-  it 'check if dns entry was created' do
+  it 'creates a new dns record' do
     chef_run_create
 
     zone = dns.zones.detect do |z|
-      z.domain == 'test.com.'
-    end or raise 'zone not created'
+      z.domain == domain
+    end
+    expect(zone).to_not be_nil
 
     record = zone.records.detect do |r|
       r.name == name
-    end or raise 'record not created'
+    end
+    expect(record).to_not be_nil
 
     # Verify created record
     expect(record.name).to eq(name)
@@ -73,16 +75,18 @@ describe 'Run default provider with AWS' do
     expect(record.type).to eq(type)
   end
 
-  it 'check if dns entry was updated' do
+  it 'updates existing dns record' do
     chef_run_update
 
     zone = dns.zones.detect do |z|
-      z.domain == 'test.com.'
-    end or raise 'zone not created'
+      z.domain == domain
+    end
+    expect(zone).to_not be_nil
 
     record = zone.records.detect do |r|
       r.name == name
-    end or raise 'record not created'
+    end
+    expect(record).to_not be_nil
 
     # Verify updated record
     expect(record.name).to eq(name)
@@ -91,19 +95,18 @@ describe 'Run default provider with AWS' do
     expect(record.type).to eq(type)
   end
 
-  it 'check if dns entry was deleted' do
+  it 'deletes a dns record' do
     chef_run_delete
 
     zone = dns.zones.detect do |z|
-      z.domain == 'test.com.'
-    end or raise 'zone not created'
+      z.domain == domain
+    end
+    expect(zone).to_not be_nil
 
     record = zone.records.detect do |r|
       r.name == name
     end
-
-    raise 'record was not deleted' if record
+    expect(record).to be_nil
   end
 
 end
-

@@ -55,7 +55,7 @@ describe 'Run DNSMadeEasy provider' do
     runner.converge('fake::dme_delete')
   end
 
-  it 'add entry in dnsmadeeasy v2.0' do
+  it 'creates a new record using dnsmadeeasy v2.0' do
     expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[]}]
@@ -64,7 +64,7 @@ describe 'Run DNSMadeEasy provider' do
     chef_run
   end
 
-  it 'update entry in dnsmadeeasy v2.0' do
+  it 'updates an existing record using dnsmadeeasy v2.0' do
     expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[{"name":"#{name}","value":"#{updated_value}","id":12345678,"type":"#{type}","ttl":#{ttl}}]}]
@@ -73,7 +73,7 @@ describe 'Run DNSMadeEasy provider' do
     chef_run
   end
 
-  it 'no update required of entry in dnsmadeeasy v2.0' do
+  it 'does no update to an existing record using dnsmadeeasy v2.0' do
     expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[{"name":"#{name}","value":"#{initial_value}","id":12345678,"type":"#{type}","ttl":#{ttl}}]}]
@@ -83,7 +83,7 @@ describe 'Run DNSMadeEasy provider' do
     chef_run
   end
 
-  it 'only updating of entry if exists in dnsmadeeasy v2.0' do
+  it 'does not create a record if it is missing when updating using dnsmadeeasy v2.0' do
     expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[]}]
@@ -93,7 +93,7 @@ describe 'Run DNSMadeEasy provider' do
     chef_run_dns_disable
   end
 
-  it 'deleting entry in dnsmadeeasy v2.0' do
+  it 'deletes a record using using dnsmadeeasy v2.0' do
     expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[{"name":"#{name}","value":"192.168.1.2","id":12345678,"type":"#{type}","ttl":#{ttl}}]}]
@@ -102,7 +102,7 @@ describe 'Run DNSMadeEasy provider' do
     chef_run_delete
   end
 
-  it 'attempt deleting entry that does not exist in dnsmadeeasy v2.0' do
+  it 'attempts to delete a record that does not exist using dnsmadeeasy v2.0' do
     expect(rest_client).to receive(:get).exactly(2).and_return(
       %Q[{"data":[{"name":"#{domain}","id":123456,"created":1192147200000}]}],
       %Q[{"data":[]}]

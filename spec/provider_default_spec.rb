@@ -1,20 +1,23 @@
 require 'spec_helper'
 require 'fog'
 
-provider = 'AWS'
-domain = 'test.com.'
-name = 'www'
-initial_value = '10.0.0.1'
-updated_value = '192.168.1.1'
-ttl = 60
-type = 'A'
-
 describe 'Run default provider with AWS' do
+
+  let(:domain) { 'test.com.' }
+  let(:provider) { 'AWS' }
+  let(:name) { 'www' }
+  let(:initial_value) { '10.0.0.1' }
+  let(:updated_value) { '192.168.1.1' }
+  let(:ttl) { 60 }
+  let(:type) { 'A' }
 
   let(:chef_run_create) do
     runner = ChefSpec::Runner.new(step_into: ['dns'])
     runner.node.set[:dns][:provider] = provider
-    runner.node.set[:dns][:credentials] = {:aws_access_key_id => 'MOCK_ACCESS_KEY', :aws_secret_access_key => 'MOCK_SECRET_KEY'}
+    runner.node.set[:dns][:credentials] = {
+      :aws_access_key_id => 'MOCK_ACCESS_KEY',
+      :aws_secret_access_key => 'MOCK_SECRET_KEY'
+    }
     runner.node.set[:dns][:disable] = false
     runner.node.set[:dns][:domain] = domain
     runner.node.set[:dns][:entry][:name] = name
@@ -26,7 +29,10 @@ describe 'Run default provider with AWS' do
   let(:chef_run_update) do
     runner = ChefSpec::Runner.new(step_into: ['dns'])
     runner.node.set[:dns][:provider] = provider
-    runner.node.set[:dns][:credentials] = {:aws_access_key_id => 'MOCK_ACCESS_KEY', :aws_secret_access_key => 'MOCK_SECRET_KEY'}
+    runner.node.set[:dns][:credentials] = {
+      :aws_access_key_id => 'MOCK_ACCESS_KEY',
+      :aws_secret_access_key => 'MOCK_SECRET_KEY'
+    }
     runner.node.set[:dns][:disable] = false
     runner.node.set[:dns][:domain] = domain
     runner.node.set[:dns][:entry][:name] = name
@@ -38,7 +44,10 @@ describe 'Run default provider with AWS' do
   let(:chef_run_delete) do
     runner = ChefSpec::Runner.new(step_into: ['dns'])
     runner.node.set[:dns][:provider] = provider
-    runner.node.set[:dns][:credentials] = {:aws_access_key_id => 'MOCK_ACCESS_KEY', :aws_secret_access_key => 'MOCK_SECRET_KEY'}
+    runner.node.set[:dns][:credentials] = {
+      :aws_access_key_id => 'MOCK_ACCESS_KEY',
+      :aws_secret_access_key => 'MOCK_SECRET_KEY'
+    }
     runner.node.set[:dns][:disable] = false
     runner.node.set[:dns][:domain] = domain
     runner.node.set[:dns][:entry][:name] = name
@@ -48,12 +57,15 @@ describe 'Run default provider with AWS' do
     runner.converge('fake::delete')
   end
 
+
   Fog.mock!
-  dns = Fog::DNS.new({
-    :provider     => provider,
-    :aws_access_key_id => 'MOCK_ACCESS_KEY',
-    :aws_secret_access_key => 'MOCK_SECRET_KEY'
-  })
+  let(:dns) do
+    Fog::DNS.new({
+      :provider => provider,
+      :aws_access_key_id => 'MOCK_ACCESS_KEY',
+      :aws_secret_access_key => 'MOCK_SECRET_KEY'
+    })
+  end
 
   it 'creates a new dns record' do
     chef_run_create

@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-domain = 'test.com'
-name = 'www'
-initial_value = '10.0.0.1'
-updated_value = '192.168.1.1'
-ttl = 60
-type = 'A'
-
 describe 'Run DNSMadeEasy provider' do
+
+  let(:domain) { 'test.com' }
+  let(:name) { 'www' }
+  let(:initial_value) { '10.0.0.1' }
+  let(:updated_value) { '192.168.1.1' }
+  let(:ttl) { 60 }
+  let(:type) { 'A' }
 
   let(:rest_client) do
     client_stub = double("RestClient::Resource")

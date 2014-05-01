@@ -1,0 +1,8 @@
+Cheffile.lock
+Gemfile.lock
+.kitchen/
+.kitchen.local.yml
+
+.librarian/
+
+tmp/

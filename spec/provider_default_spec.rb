@@ -24,7 +24,7 @@ describe 'Run default provider with AWS' do
     runner.node.set[:dns][:entry][:value] = initial_value
     runner.node.set[:dns][:entry][:type] = type
     runner.node.set[:dns][:entry][:ttl] = ttl
-    runner.converge('fake::fog_mock', 'fake::zone', 'dns::default')
+    runner.converge('dns-test::fog_mock', 'dns-test::zone', 'dns::default')
   end
   let(:chef_run_update) do
     runner = ChefSpec::Runner.new(step_into: ['dns'])
@@ -54,7 +54,7 @@ describe 'Run default provider with AWS' do
     runner.node.set[:dns][:entry][:value] = initial_value
     runner.node.set[:dns][:entry][:type] = type
     runner.node.set[:dns][:entry][:ttl] = ttl
-    runner.converge('fake::delete')
+    runner.converge('dns-test::delete')
   end
 
 

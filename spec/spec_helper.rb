@@ -1,5 +1,5 @@
 require 'chefspec'
-require 'chefspec/berkshelf'
+require 'chefspec/librarian'
 
 RSpec.configure do |config|
   config.platform = 'centos'

@@ -32,7 +32,7 @@ describe 'Run DNSMadeEasy provider' do
     runner.node.set[:dns][:entry][:value] = initial_value
     runner.node.set[:dns][:entry][:type] = type
     runner.node.set[:dns][:entry][:ttl] = ttl
-    runner.converge('fake::dme')
+    runner.converge('dns-test::dme')
   end
 
   let(:chef_run_dns_disable) do
@@ -44,7 +44,7 @@ describe 'Run DNSMadeEasy provider' do
     runner.node.set[:dns][:entry][:value] = initial_value
     runner.node.set[:dns][:entry][:type] = type
     runner.node.set[:dns][:entry][:ttl] = ttl
-    runner.converge('fake::dme')
+    runner.converge('dns-test::dme')
   end
 
   let(:chef_run_delete) do
@@ -52,7 +52,7 @@ describe 'Run DNSMadeEasy provider' do
     runner.node.set[:dns][:credentials] = {:dnsmadeeasy_api_key => "key", :dnsmadeeasy_secret_key => "secret"}
     runner.node.set[:dns][:domain] = domain
     runner.node.set[:dns][:entry][:name] = name
-    runner.converge('fake::dme_delete')
+    runner.converge('dns-test::dme_delete')
   end
 
   it 'creates a new record using dnsmadeeasy v2.0' do

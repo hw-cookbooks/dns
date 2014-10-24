@@ -1,15 +1,16 @@
 def load_current_resource
   new_resource.entry_name new_resource.name unless new_resource.entry_name
   new_resource.credentials node[:dns][:credentials] unless new_resource.credentials
-  new_resource.provider node[:dns][:provider] unless new_resource.provider
+  new_resource.dns_provider node[:dns][:provider] unless new_resource.dns_provider
 end
 
 action :create do
+
   zone = connection.zones.detect do |z|
-    z.domain == new_resource.domain
+    z.domain =~ /^#{new_resource.domain}\.?$/
   end
   record = zone.records.detect do |r|
-    r.name == new_resource.entry_name
+    r.name =~ /^#{new_resource.entry_name}\.?$/
   end
   args = Mash.new(
     :value => new_resource.entry_value,
@@ -23,7 +24,7 @@ action :create do
       record.send(k) != args[k]
     end
     unless(diff.empty?)
-      record.update(args)
+      record.modify(args)
       Chef::Log.info "Updated DNS entry: #{new_resource.entry_name} -> #{diff.map{|k| "#{k}:#{args[k]}"}.join(', ')}"
       new_resource.updated_by_last_action(true)
     end
@@ -36,7 +37,7 @@ end
 
 action :destroy do
   zone = connection.zones.detect do |z|
-    z.domain == new_resource.domain
+    z.domain =~ /^#{new_resource.domain}\.?$/
   end
   record = zone.records.detect do |r|
     r.name == new_resource.entry_name
@@ -49,9 +50,5 @@ action :destroy do
 end
 
 def connection
-  @con ||= CookbookDNS.fog(
-    Mash.new(:provider => new_resource.provider).merge(
-      new_resource.credentials
-    ).to_hash
-  )
+  @con ||= CookbookDNS.fog(new_resource.credentials.merge(:provider => new_resource.dns_provider))
 end

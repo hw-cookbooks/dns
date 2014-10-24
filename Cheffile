@@ -6,3 +6,5 @@ cookbook 'dns', path: '.'
 
 cookbook 'hosts_file'
 cookbook 'build-essential'
+
+cookbook 'dns-test', path: './test/cookbooks/dns-test'

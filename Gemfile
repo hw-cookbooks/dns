@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 source 'https://rubygems.org'
 
+gem 'berkshelf'
 gem 'rake'
 gem 'librarian-chef'
 gem 'emeril', :group => :release

@@ -130,6 +130,6 @@ def api_resource
   require "rest_client"
 
   api_url = "https://api.dnsmadeeasy.com/V2.0"
-  RestClient::Resource.new(api_url)
+  RestClient::Resource.new(api_url, :ssl_version => 'TLSv1')
 
 end

@@ -9,8 +9,8 @@ ruby_block 'Apply DNS information' do
     node.default[:dns][:entry][:name] = [node.name, node[:dns][:domain]].join('.')
     con = Fog::DNS.new(Mash.new(:provider => node[:dns][:provider]).merge(node[:dns][:credentials].to_hash))
 
-    domain = con.list_domains.body['domains'].detect do |domain_hash|
-      domain_hash['name'] == node[:dns][:domain]
+    domain = con.list_zones.body['zones'].detect do |domain_hash|
+      domain_hash['domain'] == node[:dns][:domain]
     end
     raise "Failed to locate registered domain in account for configured domain: #{node[:dns][:domain]}" unless domain
     zone = con.zones.get(domain['id'])

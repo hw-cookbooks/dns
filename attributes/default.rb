@@ -1,8 +1,8 @@
-default[:dns][:provider] = node[:cloud] ? node[:cloud][:provider] : nil
-default[:dns][:domain] = node[:domain]
+default[:dns][:provider] = node['cloud'] ? node['cloud']['provider'] : nil
+default[:dns][:domain] = node['domain']
 default[:dns][:credentials] = {}
-default[:dns][:disable] = !node[:cloud]
-default[:dns][:entry][:name] = node[:fqdn]
+default[:dns][:disable] = !node['cloud']
+default[:dns][:entry][:name] = node['fqdn']
 default[:dns][:entry][:type] = 'A'
-default[:dns][:entry][:value] = node[:ipaddress]
+default[:dns][:entry][:value] = node['ipaddress']
 default[:dns][:chef_client_config] = false

@@ -49,4 +49,3 @@ end.run_action(:run)
 ohai 'fqdn' do
   action :nothing
 end.run_action(:reload)
-
